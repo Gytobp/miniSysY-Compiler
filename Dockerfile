@@ -18,4 +18,5 @@ RUN mvn -f pom.xml clean package
 #
 FROM openjdk:15
 WORKDIR /myapp/
-COPY --from=build target/miniSysY-Compiler-1.0-SNAPSHOT.jar ./dst/
+
+COPY --from=build target/* ./dst/
