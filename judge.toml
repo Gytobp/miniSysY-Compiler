@@ -2,7 +2,8 @@
 image = { source = "dockerfile", path = "."}
 
 run = [
-  "ls",
-  "ls ..",
+#  "ls",
+#  "ls ..",
+  "cat $input",
   "java -jar ./miniSysY-Compiler-1.0-SNAPSHOT-jar-with-dependencies.jar < $input > $ir",
 ]
