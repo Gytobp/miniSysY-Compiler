@@ -12,6 +12,7 @@ WORKDIR /myapp/
 #COPY src /home/app/src
 #COPY pom.xml /home/app
 RUN mvn -f pom.xml clean package
+WORKDIR /myapp/target/
 
 ##
 ## Package stage
