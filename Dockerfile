@@ -13,10 +13,10 @@ WORKDIR /myapp/
 #COPY pom.xml /home/app
 RUN mvn -f pom.xml clean package
 
+##
+## Package stage
+##
+#FROM openjdk:15
+#WORKDIR /myapp/
 #
-# Package stage
-#
-FROM openjdk:15
-WORKDIR /myapp/
-
-COPY --from=build target/* ./dst/
+#COPY --from=build target/* ./dst/
