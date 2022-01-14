@@ -14,6 +14,7 @@ public class ConstInt extends User{
     public ConstInt(Type type, int value) {
         super(type);
         this.value = value;
+        this.setName(String.valueOf(value));
     }
 
     @Override

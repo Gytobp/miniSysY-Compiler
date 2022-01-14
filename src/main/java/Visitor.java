@@ -13,7 +13,7 @@ public class Visitor extends miniSysYBaseVisitor<Void> {
 
     public ArrayList<Parameter> _parameters = new ArrayList<>();
     public ArrayList<Instruction> _instructions = new ArrayList<>();
-    public int _constInt;
+    public int nodeIntValue = Integer.MAX_VALUE; // visit节点之后记录这个节点表达式的值, visit内部return前赋值，调用visit后立即取值
 
     @Override
     public Void visitProgram(miniSysYParser.ProgramContext ctx) {
@@ -151,9 +151,8 @@ public class Visitor extends miniSysYBaseVisitor<Void> {
     public Void visitReturnStmt(miniSysYParser.ReturnStmtContext ctx) {
         assert ctx.RETURN_KW().getText().equals("return");
         Command cmd = Command.RET;
-        _constInt = 0;
         visit(ctx.exp());
-        TerminatorInstruction instruction = new TerminatorInstruction(null, cmd, new ConstInt(Type.INTEGER32, _constInt));
+        TerminatorInstruction instruction = new TerminatorInstruction(null, cmd, new ConstInt(Type.INTEGER32, nodeIntValue));
         _instructions.add(instruction);
         return null;
     }
@@ -185,21 +184,34 @@ public class Visitor extends miniSysYBaseVisitor<Void> {
 
     @Override
     public Void visitIntConst(miniSysYParser.IntConstContext ctx) {
+        int result;
         if (ctx.DECIMAL_CONST() != null) {
-            _constInt = new BigInteger(ctx.DECIMAL_CONST().getText(), 10).intValue();
+            result = new BigInteger(ctx.DECIMAL_CONST().getText(), 10).intValue();
+        } else if (ctx.HEXADECIMAL_CONST() != null) {
+            result = new BigInteger(ctx.HEXADECIMAL_CONST().getText().substring(2), 16).intValue();
+        } else {
+            result = new BigInteger(ctx.OCTAL_CONST().getText().substring(1), 8).intValue();
         }
-        if (ctx.HEXADECIMAL_CONST() != null) {
-            _constInt = new BigInteger(ctx.HEXADECIMAL_CONST().getText().substring(2), 16).intValue();
-        }
-        if (ctx.OCTAL_CONST() != null) {
-            _constInt = new BigInteger(ctx.OCTAL_CONST().getText().substring(1), 8).intValue();
-        }
+        nodeIntValue = result;
         return null;
     }
 
     @Override
     public Void visitUnaryExp(miniSysYParser.UnaryExpContext ctx) {
-        return super.visitUnaryExp(ctx);
+        if (ctx.unaryOp() != null) { // UnaryOP + UnaryExp
+            visit(ctx.unaryExp());
+            int result = nodeIntValue;
+            boolean isMinus = ctx.unaryOp().MINUS() != null;
+            if (isMinus) {
+                result = -result;
+            }
+            nodeIntValue = result;
+        } else if (ctx.primaryExp() != null){ // PrimaryExp
+            visit(ctx.primaryExp());
+        } else { // callee
+            visit(ctx.callee());
+        }
+        return null;
     }
 
     @Override
@@ -224,7 +236,21 @@ public class Visitor extends miniSysYBaseVisitor<Void> {
 
     @Override
     public Void visitMulExp(miniSysYParser.MulExpContext ctx) {
-        return super.visitMulExp(ctx);
+        visit(ctx.unaryExp(0));
+        int result = nodeIntValue;
+        for (int i = 0; i < ctx.mulOp().size(); i++) {
+            visit(ctx.unaryExp(i+1));
+            int itemValue = nodeIntValue;
+            if (ctx.mulOp(i).MUL() != null) {
+                result *= itemValue;
+            } else if (ctx.mulOp(i).DIV() != null) {
+                result /= itemValue;
+            } else {
+                result %= itemValue;
+            }
+        }
+        nodeIntValue = result;
+        return null;
     }
 
     @Override
@@ -234,7 +260,16 @@ public class Visitor extends miniSysYBaseVisitor<Void> {
 
     @Override
     public Void visitAddExp(miniSysYParser.AddExpContext ctx) {
-        return super.visitAddExp(ctx);
+        visit(ctx.mulExp(0));
+        int result = nodeIntValue;
+        for (int i = 0; i < ctx.addOp().size(); i++) {
+            boolean isPlus = ctx.addOp(i).PLUS() != null;
+            visit(ctx.mulExp(i+1));
+            int itemValue = nodeIntValue;
+            result = isPlus ? result + itemValue : result - itemValue;
+        }
+        nodeIntValue = result;
+        return null;
     }
 
     @Override

@@ -5,7 +5,7 @@ import org.stringtemplate.v4.compiler.Bytecode;
 import java.util.ArrayList;
 
 public class BasicBlock extends User{
-    private ArrayList<Instruction> instructions;
+    public ArrayList<Instruction> instructions;
 
     public BasicBlock(Type type) {
         super(type);
@@ -34,8 +34,9 @@ public class BasicBlock extends User{
     @Override
     public String toString() {
         var sb = new StringBuilder();
+        sb.append(getName()).append(":\n");
         for (Instruction instruction : instructions) {
-            sb.append(instruction.toString());
+            sb.append(instruction.toString()); // FIXME may not call child's toString ?
         }
         return sb.toString();
     }

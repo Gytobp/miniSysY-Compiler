@@ -12,14 +12,15 @@ import java.nio.file.Paths;
 public class Main{
     public static void main(String[] args){
         String input = """
-                 int main() {return 0} 
+                int main() {
+                    return 1 + (-2) * (3 / (4 - 5));
+                }
                 """;
-        input = null;
-        try {
-            input = new String(Files.readAllBytes(Paths.get(args[0])));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            input = new String(Files.readAllBytes(Paths.get(args[0])));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         miniSysYLexer lexer = new miniSysYLexer(CharStreams.fromString(input));
         lexer.addErrorListener(new BaseErrorListener());

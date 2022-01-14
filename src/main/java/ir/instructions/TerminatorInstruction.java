@@ -48,6 +48,6 @@ public class TerminatorInstruction extends Instruction {
 
     @Override
     public String toString() {
-        return cmd.ir + " " + arg.getType().string + " " + arg + ";\n";
+        return "\t" + cmd.ir + " " + arg.getType().string + " " + arg + ";\n";
     }
 }

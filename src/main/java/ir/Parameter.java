@@ -8,6 +8,6 @@ public class Parameter extends Value{
 
     @Override
     public String toString() {
-        return getType().string + " " + getName();
+        return getType().string + " %" + getName();
     }
 }
