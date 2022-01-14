@@ -5,12 +5,21 @@ import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 public class Main{
     public static void main(String[] args){
         String input = """
                  int main() {return 0} 
                 """;
-        input = args[0];
+        input = null;
+        try {
+            input = new String(Files.readAllBytes(Paths.get(args[0])));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         miniSysYLexer lexer = new miniSysYLexer(CharStreams.fromString(input));
         lexer.addErrorListener(new BaseErrorListener());
