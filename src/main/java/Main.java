@@ -16,11 +16,11 @@ public class Main{
                     return 1 + (-2) * (3 / (4 - 5));
                 }
                 """;
-//        try {
-//            input = new String(Files.readAllBytes(Paths.get(args[0])));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            input = new String(Files.readAllBytes(Paths.get(args[0])));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         miniSysYLexer lexer = new miniSysYLexer(CharStreams.fromString(input));
         lexer.addErrorListener(new BaseErrorListener());
