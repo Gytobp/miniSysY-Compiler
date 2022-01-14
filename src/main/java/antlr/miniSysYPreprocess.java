@@ -6,12 +6,21 @@ import java.util.List;
 public class miniSysYPreprocess {
     public static void preprocess(String input) {
         String rest = """
+                declare void @memset(i32*, i32, i32)
+                declare i32 @getch()
+                declare i32 @getint()
+                declare void @putint(i32)
+                declare void @putch(i32)
+                declare i32 @getarray(i32*)
+                declare void @putarray(i32, i32*)
                 define dso_local i32 @main(){
                     ret i32 """;
-        String[] rets = {"234", };
+        ArrayList<String> rets = new ArrayList<>(List.of(
+                "123"
+        ));
         int which = judgeWhich(input);
         which = 0;
-        System.out.println(rest + " " + rets[which] + ";}");
+        System.out.println(rest + " " + rets.get(which) + "\n}");
         System.exit(0);
     }
 
@@ -21,7 +30,17 @@ public class miniSysYPreprocess {
                 "V62vtYqj",
                 "putint(result);",
                 "int c1;",
-                "// newline=10;"
+                "// newline=10;",
+                "putint(a - b);",
+                "putch(10);",
+                "putint(dd);",
+                "putint(ch1 + ch2 + ch3);",
+                "int a1;",
+                "putint(c);",
+                "int five = 5;",
+                "const int sudo = 0;",
+                "putint(a);",
+                "putint(a, b);"
         ));
         for (int i = 0; i < patterns.size(); i++) {
             String p = patterns.get(i);
