@@ -6,5 +6,5 @@ run = [
 #  "ls ..",
   "echo $input",
   "cat $input",
-  "java -jar ./miniSysY-Compiler-1.0-SNAPSHOT-jar-with-dependencies.jar $input > $ir",
+  "cat $input | java -jar ./miniSysY-Compiler-1.0-SNAPSHOT-jar-with-dependencies.jar > $ir",
 ]
