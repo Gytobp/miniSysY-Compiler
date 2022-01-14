@@ -1,10 +1,20 @@
 import antlr.miniSysYBaseVisitor;
 import antlr.miniSysYParser;
+import ir.*;
+import ir.Value.Type;
+import ir.instructions.TerminatorInstruction;
+import ir.instructions.TerminatorInstruction.Command;
 
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
 
 public class Visitor extends miniSysYBaseVisitor<Void> {
+    private final IRBuilder irb = IRBuilder.getInstance();
+
+    public ArrayList<Parameter> _parameters = new ArrayList<>();
+    public ArrayList<Instruction> _instructions = new ArrayList<>();
+    public int _constInt;
+
     @Override
     public Void visitProgram(miniSysYParser.ProgramContext ctx) {
         return super.visitProgram(ctx);
@@ -57,8 +67,24 @@ public class Visitor extends miniSysYBaseVisitor<Void> {
 
     @Override
     public Void visitFuncDef(miniSysYParser.FuncDefContext ctx) {
-
-        return super.visitFuncDef(ctx);
+        String retTypeText = ctx.funcType().getText();
+        Type returnType = retTypeText.equals("int") ? Type.INTEGER32 : Type.VOID;
+        String funcName = ctx.IDENT().getText();
+        ArrayList<Parameter> parameters = new ArrayList<>();
+        if (ctx.funcFParams() != null) {
+            _parameters.clear();
+            visit(ctx.funcFParams()); // TODO deeper visit implementation
+            parameters.addAll(_parameters);
+        }
+        ArrayList<Instruction> instructions = new ArrayList<>();
+        if (ctx.block() != null) {
+            _instructions.clear();
+            ctx.block().blockItem().forEach(this::visit);
+            instructions.addAll(_instructions);
+        }
+        Definition funcDef = new Definition(new Function(returnType, funcName, parameters, new BasicBlock(null, instructions)));
+        irb.functionDefinitions.add(funcDef);
+        return null;
     }
 
     @Override
@@ -123,7 +149,13 @@ public class Visitor extends miniSysYBaseVisitor<Void> {
 
     @Override
     public Void visitReturnStmt(miniSysYParser.ReturnStmtContext ctx) {
-        return super.visitReturnStmt(ctx);
+        assert ctx.RETURN_KW().getText().equals("return");
+        Command cmd = Command.RET;
+        _constInt = 0;
+        visit(ctx.exp());
+        TerminatorInstruction instruction = new TerminatorInstruction(null, cmd, new ConstInt(Type.INTEGER32, _constInt));
+        _instructions.add(instruction);
+        return null;
     }
 
     @Override
@@ -153,7 +185,16 @@ public class Visitor extends miniSysYBaseVisitor<Void> {
 
     @Override
     public Void visitIntConst(miniSysYParser.IntConstContext ctx) {
-        return super.visitIntConst(ctx);
+        if (ctx.DECIMAL_CONST() != null) {
+            _constInt = new BigInteger(ctx.DECIMAL_CONST().getText(), 10).intValue();
+        }
+        if (ctx.HEXADECIMAL_CONST() != null) {
+            _constInt = new BigInteger(ctx.HEXADECIMAL_CONST().getText().substring(2), 16).intValue();
+        }
+        if (ctx.OCTAL_CONST() != null) {
+            _constInt = new BigInteger(ctx.OCTAL_CONST().getText().substring(1), 8).intValue();
+        }
+        return null;
     }
 
     @Override

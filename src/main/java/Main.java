@@ -1,14 +1,9 @@
-import cal.Add;
-import java.util.Scanner;
 import antlr.miniSysYLexer;
 import antlr.miniSysYParser;
 import org.antlr.v4.runtime.BailErrorStrategy;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.RecognitionException;
-import org.antlr.v4.runtime.Recognizer;
-import org.antlr.v4.runtime.tree.ParseTree;
 
 public class Main{
     public static void main(String[] args){
@@ -17,18 +12,17 @@ public class Main{
                     return 123;
                 }
                """;
+//        input = args[0];
 
         miniSysYLexer lexer = new miniSysYLexer(CharStreams.fromString(input));
+        lexer.addErrorListener(new BaseErrorListener());
         miniSysYParser parser = new miniSysYParser(new CommonTokenStream(lexer));
+        parser.setErrorHandler(new BailErrorStrategy());
         miniSysYParser.ProgramContext tree= parser.program();
-        System.out.println(tree.toStringTree(parser));
-
-//        int a,b;
-//        Scanner input = new Scanner(System.in);
-//        a = input.nextInt();
-//        b = input.nextInt();
-//        int c;
-//        c = Add.add(a, b);
-//        System.out.println(c);
+//        System.out.println(tree.toStringTree(parser));
+        Visitor visitor = new Visitor();
+        visitor.visit(tree);
+        IRBuilder irb = IRBuilder.getInstance();
+        System.out.println(irb.toString());
     }
 }
