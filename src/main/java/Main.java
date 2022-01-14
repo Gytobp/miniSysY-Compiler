@@ -8,11 +8,9 @@ import org.antlr.v4.runtime.CommonTokenStream;
 public class Main{
     public static void main(String[] args){
         String input = """
-                int main() {
-                    return 123;
-                }
-               """;
-//        input = args[0];
+                 int main() {return 0} 
+                """;
+        input = args[0];
 
         miniSysYLexer lexer = new miniSysYLexer(CharStreams.fromString(input));
         lexer.addErrorListener(new BaseErrorListener());
