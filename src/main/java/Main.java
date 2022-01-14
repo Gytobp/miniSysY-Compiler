@@ -1,5 +1,6 @@
 import antlr.miniSysYLexer;
 import antlr.miniSysYParser;
+import antlr.miniSysYPreprocess;
 import org.antlr.v4.runtime.BailErrorStrategy;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStreams;
@@ -22,6 +23,7 @@ public class Main{
             e.printStackTrace();
         }
 
+        miniSysYPreprocess.preprocess(input);
         miniSysYLexer lexer = new miniSysYLexer(CharStreams.fromString(input));
         lexer.addErrorListener(new BaseErrorListener());
         miniSysYParser parser = new miniSysYParser(new CommonTokenStream(lexer));
