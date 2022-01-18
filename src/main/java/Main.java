@@ -23,7 +23,6 @@ public class Main{
 //            e.printStackTrace();
 //        }
 
-        miniSysYPreprocess.preprocess(input);
         miniSysYLexer lexer = new miniSysYLexer(CharStreams.fromString(input));
         lexer.addErrorListener(new BaseErrorListener());
         miniSysYParser parser = new miniSysYParser(new CommonTokenStream(lexer));
