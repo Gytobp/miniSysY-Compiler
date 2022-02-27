@@ -1,5 +1,4 @@
-import ir.Definition;
-import ir.Function;
+import ir.FuncDefinition;
 
 import java.util.ArrayList;
 
@@ -11,12 +10,12 @@ public class IRBuilder {
         return instance;
     }
 
-    public ArrayList<Definition> functionDefinitions = new ArrayList<>();
+    public ArrayList<FuncDefinition> functionDefinitions = new ArrayList<>();
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (Definition funcDef :
+        for (FuncDefinition funcDef :
                 functionDefinitions) {
             sb.append(funcDef);
         }

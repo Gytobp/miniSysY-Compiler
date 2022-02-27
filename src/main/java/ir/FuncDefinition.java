@@ -1,6 +1,6 @@
 package ir;
 
-public class Definition {
+public class FuncDefinition {
     public static final String DEF_FUNC = "define dso_local";
 
     public Function getFunc() {
@@ -13,7 +13,7 @@ public class Definition {
 
     private Function func;
 
-    public Definition(Function func) {
+    public FuncDefinition(Function func) {
         this.func = func;
     }
 

@@ -7,6 +7,7 @@ import ir.instructions.TerminatorInstruction.Command;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Visitor extends miniSysYBaseVisitor<Void> {
     private final IRBuilder irb = IRBuilder.getInstance();
@@ -22,6 +23,7 @@ public class Visitor extends miniSysYBaseVisitor<Void> {
 
     @Override
     public Void visitCompUnit(miniSysYParser.CompUnitContext ctx) {
+        Scope.push(new HashMap<>());
         return super.visitCompUnit(ctx);
     }
 
@@ -42,7 +44,12 @@ public class Visitor extends miniSysYBaseVisitor<Void> {
 
     @Override
     public Void visitConstDef(miniSysYParser.ConstDefContext ctx) {
-        return super.visitConstDef(ctx);
+        String ident = ctx.IDENT().getText();
+        assert Scope.checkIdent(ident);
+        visit(ctx.constInitVal());
+        Const aConst = new Const(ident, nodeIntValue);
+        Scope.top().put(ident, aConst);
+        return null;
     }
 
     @Override
@@ -82,8 +89,10 @@ public class Visitor extends miniSysYBaseVisitor<Void> {
             ctx.block().blockItem().forEach(this::visit);
             instructions.addAll(_instructions);
         }
-        Definition funcDef = new Definition(new Function(returnType, funcName, parameters, new BasicBlock(null, instructions)));
+        Function function = new Function(returnType, funcName, parameters, new BasicBlock(null, instructions));
+        FuncDefinition funcDef = new FuncDefinition(function);
         irb.functionDefinitions.add(funcDef);
+        Scope.top().put(funcName, function);
         return null;
     }
 
@@ -104,7 +113,9 @@ public class Visitor extends miniSysYBaseVisitor<Void> {
 
     @Override
     public Void visitBlock(miniSysYParser.BlockContext ctx) {
-        return super.visitBlock(ctx);
+        Scope.push(new HashMap<>());
+        super.visitBlock(ctx);
+        return null;
     }
 
     @Override
@@ -169,7 +180,12 @@ public class Visitor extends miniSysYBaseVisitor<Void> {
 
     @Override
     public Void visitLVal(miniSysYParser.LValContext ctx) {
-        return super.visitLVal(ctx);
+        String ident = ctx.IDENT().getText();
+        var identObj = Scope.top().get(ident);
+        if (identObj instanceof Const) {
+            nodeIntValue = ((Const) identObj).value;
+        }
+        return null;
     }
 
     @Override

@@ -1,3 +1,15 @@
+[jobs.lab2]
+image = { source = "dockerfile", path = "."}
+
+run = [
+  #  "ls",
+  #  "ls ..",
+  "cat $input",
+  #  "in=$(cat $input)",
+  "java -jar ./miniSysY-Compiler-1.0-SNAPSHOT-jar-with-dependencies.jar $input > $ir",
+]
+
+
 [jobs.lab3]
 image = { source = "dockerfile", path = "."}
 

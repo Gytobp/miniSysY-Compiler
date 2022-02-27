@@ -3,7 +3,7 @@ package ir;
 
 import java.util.ArrayList;
 
-/* a call or part of Definition
+/* a call or part of FuncDefinition
  */
 public class Function extends User {
     private int nameCount = -1;

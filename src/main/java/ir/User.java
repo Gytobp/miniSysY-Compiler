@@ -3,17 +3,17 @@ package ir;
 import java.util.ArrayList;
 
 public class User extends Value{
-    private ArrayList<Usage> operands;
+    private ArrayList<Usage> usages;
 
     public User(Type type) {
         super(type);
     }
 
-    public ArrayList<Usage> getOperands() {
-        return operands;
+    public ArrayList<Usage> getUsages() {
+        return usages;
     }
 
-    public void setOperands(ArrayList<Usage> operands) {
-        this.operands = operands;
+    public void setUsages(ArrayList<Usage> usages) {
+        this.usages = usages;
     }
 }
