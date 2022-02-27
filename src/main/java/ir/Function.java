@@ -77,7 +77,7 @@ public class Function extends User {
                 basicBlock.setName(this.genName());
                 for (Instruction instruction :
                         basicBlock.instructions) {
-                    instruction.setName("%" + this.genName());
+//                    instruction.setName("%" + this.genName());
                 }
                 sb.append(basicBlock.toString());
             }
