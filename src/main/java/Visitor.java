@@ -200,14 +200,14 @@ public class Visitor extends miniSysYBaseVisitor<Void> {
 
     @Override
     public Void visitIntConst(miniSysYParser.IntConstContext ctx) {
-        int result;
-        if (ctx.DECIMAL_CONST() != null) {
-            result = new BigInteger(ctx.DECIMAL_CONST().getText(), 10).intValue();
-        } else if (ctx.HEXADECIMAL_CONST() != null) {
-            result = new BigInteger(ctx.HEXADECIMAL_CONST().getText().substring(2), 16).intValue();
-        } else {
-            result = new BigInteger(ctx.OCTAL_CONST().getText().substring(1), 8).intValue();
-        }
+        int result = 1;
+//        if (ctx.DECIMAL_CONST() != null) {
+//            result = new BigInteger(ctx.DECIMAL_CONST().getText(), 10).intValue();
+//        } else if (ctx.HEXADECIMAL_CONST() != null) {
+//            result = new BigInteger(ctx.HEXADECIMAL_CONST().getText().substring(2), 16).intValue();
+//        } else {
+//            result = new BigInteger(ctx.OCTAL_CONST().getText().substring(1), 8).intValue();
+//        }
         nodeIntValue = result;
         return null;
     }
